@@ -8,9 +8,11 @@ import api
 import winUser
 import controlTypes
 from ui import message
+from winsound import PlaySound, SND_FILENAME, SND_ASYNC
 from re import search
 from os import path
 from keyboardHandler import KeyboardInputGesture
+from inputCore import manager
 from threading import Thread
 from time import sleep
 import addonHandler
@@ -21,19 +23,30 @@ addonHandler.initTranslation()
 class AppModule(appModuleHandler.AppModule):
 
 	fg = ""
-	escape = KeyboardInputGesture.fromName("escape")
+	elementObj = ""
+	toolObj = ""
+	category = "AirExplorer"
+	# Translators: Mensaje que anuncia la disponibilidad solo desde un objeto específico
+	errorMsg = _('Opción solo disponible desde el objeto situado entre el árbol y la lista de archivos')
 
 	def event_NVDAObject_init(self, obj):
 		self.fg = api.getForegroundObject()
 
 	def event_gainFocus(self, obj, nextHandler):
-		if obj.name == '' and obj.role == controlTypes.ROLE_DOCUMENT:
-			obj.simplePrevious.doAction()
-			nextHandler()
-		else:
+		try:
+			if obj.name == '' and obj.role == controlTypes.ROLE_DOCUMENT:
+				obj.simplePrevious.doAction()
+				PlaySound("C:/Windows/Media/Windows Recycle.wav", SND_FILENAME | SND_ASYNC)
+			elif obj.parent.next.name == 'elementHost1' and obj.role == controlTypes.ROLE_PANE:
+				self.elementObj = obj.parent.next
+				self.toolObj = obj.parent.next.next
+				message(self.elementObj.children[3].children[0].children[5].name)
+			else:
+				nextHandler()
+		except:
 			nextHandler()
 
-	@script(gestures=[f"kb:control+{i}" for i in range(0, 10)])
+	@script(gestures=[f"kb:control+{i}" for i in range(1, 10)])
 	def script_status(self, gesture):
 		key = -(int(gesture.mainKeyName) + 1)
 		try:
@@ -41,13 +54,14 @@ class AppModule(appModuleHandler.AppModule):
 			objName = search(r"Origen.+Destino", statusObj)
 			fileName = path.basename(objName[0][8:][:-9])
 			progress = search(r"Progreso\:\s\d+", statusObj)
-			message("{}; {} porciento".format(fileName, progress[0][10:]))
+			# Translators: añade la palabra porciento al número del porcentaje
+			message(_('{}; {} porciento').format(fileName, progress[0][10:]))
 		except (TypeError, IndexError):
 			# Translators: Anuncia que no hay datos
 			message(_('Sin datos'))
 
 	@script(
-		category="AirExplorer",
+		category = category,
 		# Translators: Descripción del elemento en el diálogo gestos de entrada
 		description= _('Activa el panel de cuentas'),
 		gesture="kb:control+shift+c")
@@ -57,7 +71,7 @@ class AppModule(appModuleHandler.AppModule):
 		obj.doAction()
 
 	@script(
-		category="AirExplorer",
+		category = category,
 		# Translators: Descripción del elemento en el diálogo gestos de entrada
 		description= _('Activa el panel de opciones'),
 		gesture="kb:control+shift+o")
@@ -67,48 +81,42 @@ class AppModule(appModuleHandler.AppModule):
 		obj.doAction()
 
 	@script(
-		category="AirExplorer",
+		category = category,
 		# Translators: Descripción del elemento en el diálogo gestos de entrada
-		description= _('Se desplaza a la lista de archivos de la carpeta con el foco'),
-		gesture="kb:control+rightArrow")
-	def script_listFocus(self, gesture):
-		focus = api.getFocusObject()
-		if focus.role != controlTypes.ROLE_TREEVIEWITEM: return
-		ancestors = api.getFocusAncestors()
-		for ancestor in reversed(ancestors):
-			try:
-				if ancestor.next.role == controlTypes.ROLE_WINDOW:
-					obj = ancestor.next
-					break
-			except AttributeError:
-				pass
-		api.moveMouseToNVDAObject(obj)
-		winUser.mouse_event(winUser.MOUSEEVENTF_LEFTDOWN,0,0,None,None)
-		winUser.mouse_event(winUser.MOUSEEVENTF_LEFTUP,0,0,None,None)
+		description= _('Se mueve al siguiente de los 3 elementos posibles'),
+		gesture="kb:.")
+	def script_nextElement(self, gesture):
+		fc = api.getFocusObject()
+		if fc.role != controlTypes.ROLE_LISTITEM and fc.role != controlTypes.ROLE_LIST:
+			manager.emulateGesture(KeyboardInputGesture.fromName("tab"))
+		else:
+			PlaySound("C:/Windows/Media/Windows Information Bar.wav", SND_ASYNC | SND_FILENAME)
 
 	@script(
-		category="AirExplorer",
+		category = category,
 		# Translators: Descripción del elemento en el diálogo gestos de entrada
-		description= _('Se desplaza al árbol de carpetas'),
-		gesture="kb:control+leftArrow")
-	def script_treeFocus(self, gesture):
-		focus = api.getFocusObject()
-		if focus.role != controlTypes.ROLE_LISTITEM and focus.role != controlTypes.ROLE_LIST: return
-		ancestors = api.getFocusAncestors()
-		for ancestor in reversed(ancestors):
-			try:
-				if ancestor.previous.role == controlTypes.ROLE_WINDOW:
-					obj = ancestor.previous
-					break
-			except AttributeError:
-				pass
-		api.moveMouseToNVDAObject(obj)
-		winUser.mouse_event(winUser.MOUSEEVENTF_LEFTDOWN,0,0,None,None)
-		winUser.mouse_event(winUser.MOUSEEVENTF_LEFTUP,0,0,None,None)
-		Thread(target=self.closeEditableText).start()
-
-	def closeEditableText(self):
-		sleep(1)
+		description= _('Se mueve al anterior de los 3 elementos posibles'),
+		gesture="kb:,")
+	def script_previousElement(self, gesture):
 		fc = api.getFocusObject()
-		if fc.role == controlTypes.ROLE_EDITABLETEXT:
-			self.escape.send()
+		if fc.role != controlTypes.ROLE_TREEVIEWITEM:
+			manager.emulateGesture(KeyboardInputGesture.fromName("shift+tab"))
+		else:
+			PlaySound("C:/Windows/Media/Windows Information Bar.wav", SND_ASYNC | SND_FILENAME)
+
+	@script(
+		category = category,
+		# Translators: Descripción del elemento en el diálogo gestos de entrada
+		description= _('Activa la opción opciones de la nube'),
+		gesture="kb:control+shift+p"
+	)
+	def script_cloudOptions(self, gesture):
+		try:
+			toolObj = api.getFocusObject().parent.next.next
+			if toolObj.name == 'toolStrip1':
+				message(toolObj.children[3].children[10].name)
+				toolObj.children[3].children[10].doAction()
+			else:
+				message(self.errorMsg)
+		except (IndexError, AttributeError):
+			message(self.errorMsg)
