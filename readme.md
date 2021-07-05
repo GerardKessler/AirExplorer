@@ -13,7 +13,7 @@ Si al abrir el programa aparece el cartel air explorer pro lifetime lice, el com
 ## Movimiento entre el panel de pestañas y la lista de archivos:
 Con avance y retroceso de página nos desplazaremos entre 3 elementos siempre y cuando estemos en la pestaña con una nube activa.
 Esos 3 elementos son el panel de pestañas, la vista en árbol, y la lista de archivos. Al llegar al tope de alguno de los extremos va a emitirse un sonido.  
-Con tabulador y shift tabulador nos desplazaremos normalmente entre los elementos, estos atajos están pensados fundamentalmente para navegar entre los objetos más utilizados simplificando el desplazamiento.  
+Con tabulador y shift tabulador nos desplazaremos normalmente entre los elementos, los atajos anteriores están pensados fundamentalmente para navegar entre los objetos más utilizados simplificando el desplazamiento.  
 
 ## Atajos del programa:
 
