@@ -22,8 +22,6 @@ class AppModule(appModuleHandler.AppModule):
 	elementObj = ""
 	toolObj = ""
 	category = "AirExplorer"
-	# Translators: Mensaje que anuncia la disponibilidad solo desde un objeto específico
-	errorMsg = _('Opción solo disponible desde el objeto situado entre el árbol y la lista de archivos')
 
 	def event_NVDAObject_init(self, obj):
 		self.fg = api.getForegroundObject()
@@ -54,7 +52,6 @@ class AppModule(appModuleHandler.AppModule):
 		except (TypeError, IndexError):
 			# Translators: Anuncia que no hay datos
 			message(_('Sin datos'))
-
 
 	@script(
 		category = category,
