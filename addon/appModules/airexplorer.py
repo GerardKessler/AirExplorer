@@ -22,19 +22,32 @@ class AppModule(appModuleHandler.AppModule):
 	elementObj = ""
 	toolObj = ""
 	category = "AirExplorer"
+	# Translators: Añade el texto herramientas activas al nombre de la nube
+	activeTools = _('Herramientas activas de')
+
+	def chooseNVDAObjectOverlayClasses(self, obj, clsList):
+		try:
+			if obj.name == None and obj.role == controlTypes.ROLE_PANE:
+				clsList.insert(0, CloudOptions)
+		except:
+			pass
 
 	def event_NVDAObject_init(self, obj):
 		self.fg = api.getForegroundObject()
+		try:
+			if obj.name == None and obj.role == controlTypes.ROLE_PANE:
+				self.elementObj = obj.parent.next
+				self.toolObj = obj.parent.next.next
+				obj.name = "{} {}".format(self.activeTools, self.elementObj.children[3].children[0].children[5].name)
+		except (AttributeError, IndexError):
+			pass
 
 	def event_gainFocus(self, obj, nextHandler):
 		try:
 			if obj.name == '' and obj.role == controlTypes.ROLE_DOCUMENT:
 				obj.simplePrevious.doAction()
 				PlaySound("C:/Windows/Media/Speech Disambiguation.wav", SND_FILENAME | SND_ASYNC)
-			elif obj.parent.next.name == 'elementHost1' and obj.role == controlTypes.ROLE_PANE:
-				self.elementObj = obj.parent.next
-				self.toolObj = obj.parent.next.next
-				message(self.elementObj.children[3].children[0].children[5].name)
+				nextHandler()
 			else:
 				nextHandler()
 		except:
@@ -44,11 +57,11 @@ class AppModule(appModuleHandler.AppModule):
 	def script_status(self, gesture):
 		key = -(int(gesture.mainKeyName) + 1)
 		try:
-			filePath = self.fg.children[0].children[3].children[0].children[3].children[0].children[3].children[0].children[3].children[1].children[3].children[0].children[3].children[0].children[3].children[key].children[2].name
-			fileName = path.basename(filePath)
+			filePath = self.fg.children[0].children[3].children[0].children[3].children[0].children[3].children[0].children[3].children[1].children[3].children[0].children[3].children[0].children[3].children[key].children[1].name
+			elementName = path.basename(filePath)
 			progress = self.fg.children[0].children[3].children[0].children[3].children[0].children[3].children[0].children[3].children[1].children[3].children[0].children[3].children[0].children[3].children[key].children[5].name
 			# Translators: Añade la palabra porcentaje al valor
-			message(_('{}; {} porciento'.format(fileName, progress)))
+			message(_('{}; {} porciento'.format(elementName, progress)))
 		except (TypeError, IndexError):
 			# Translators: Anuncia que no hay datos
 			message(_('Sin datos'))
@@ -81,11 +94,7 @@ class AppModule(appModuleHandler.AppModule):
 	def script_nextElement(self, gesture):
 		fc = api.getFocusObject()
 		if fc.role != controlTypes.ROLE_LISTITEM and fc.role != controlTypes.ROLE_LIST:
-			if fc.role == controlTypes.ROLE_TREEVIEWITEM:
-				manager.emulateGesture(KeyboardInputGesture.fromName("tab"))
-				manager.emulateGesture(KeyboardInputGesture.fromName("tab"))
-			else:
-				manager.emulateGesture(KeyboardInputGesture.fromName("tab"))
+			manager.emulateGesture(KeyboardInputGesture.fromName("tab"))
 		else:
 			PlaySound("C:/Windows/Media/Windows Information Bar.wav", SND_ASYNC | SND_FILENAME)
 
@@ -97,10 +106,33 @@ class AppModule(appModuleHandler.AppModule):
 	def script_previousElement(self, gesture):
 		fc = api.getFocusObject()
 		if fc.role != controlTypes.ROLE_TAB:
-			if fc.role == controlTypes.ROLE_LISTITEM or fc.role == controlTypes.ROLE_LIST:
-				manager.emulateGesture(KeyboardInputGesture.fromName("shift+tab"))
-				manager.emulateGesture(KeyboardInputGesture.fromName("shift+tab"))
-			else:
-				manager.emulateGesture(KeyboardInputGesture.fromName("shift+tab"))
+			manager.emulateGesture(KeyboardInputGesture.fromName("shift+tab"))
 		else:
 			PlaySound("C:/Windows/Media/Windows Information Bar.wav", SND_ASYNC | SND_FILENAME)
+
+class CloudOptions():
+
+	tools = ""
+
+	def initOverlayClass(self):
+		try:
+			if self.name == None and self.role == controlTypes.ROLE_PANE:
+				self.bindGestures({"kb:n":"newFolder", "kb:z":"zipLoad", "kb:v":"changeView", "kb:s":"freeSpace"})
+				self.tools = self.parent.next.next
+		except AttributeError:
+			pass
+
+	def script_newFolder(self, gesture):
+		message(self.tools.children[3].children[1].name)
+		self.tools.children[3].children[1].doAction()
+
+	def script_zipLoad(self, gesture):
+		message(self.tools.children[3].children[6].name)
+		self.tools.children[3].children[6].doAction()
+
+	def script_changeView(self, gesture):
+		message(self.tools.children[3].children[-1].name)
+		self.tools.children[3].children[-1].doAction()
+
+	def script_freeSpace(self, gesture):
+		message(self.parent.next.next.next.children[3].children[2].name)
