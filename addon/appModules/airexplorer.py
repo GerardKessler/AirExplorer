@@ -23,7 +23,7 @@ class AppModule(appModuleHandler.AppModule):
 	toolObj = ""
 	category = "AirExplorer"
 	# Translators: Añade el texto herramientas activas al nombre de la nube
-	activeTools = _('Herramientas activas de')
+	activeTools = _('Herramientas activas')
 
 	def chooseNVDAObjectOverlayClasses(self, obj, clsList):
 		try:
@@ -38,7 +38,7 @@ class AppModule(appModuleHandler.AppModule):
 			if obj.name == None and obj.role == controlTypes.ROLE_PANE:
 				self.elementObj = obj.parent.next
 				self.toolObj = obj.parent.next.next
-				obj.name = "{} {}".format(self.activeTools, self.elementObj.children[3].children[0].children[5].name)
+				obj.name = "{}, {}".format(self.elementObj.children[3].children[0].children[5].name, self.activeTools)
 		except (AttributeError, IndexError):
 			pass
 
