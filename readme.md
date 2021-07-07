@@ -15,7 +15,6 @@ Si al abrir el programa aparece el cartel air explorer pro lifetime lice, el com
 * s; verbalizar el espacio disponible.
 * n; crear una nueva carpeta.
 * z; Subir como zip.
-* v; conmutar entre los tipos de vista.
 
 ## Movimiento entre el panel de pestañas y la lista de archivos:
 Con avance y retroceso de página nos desplazaremos entre 4 elementos siempre y cuando estemos en la pestaña con una nube activa.

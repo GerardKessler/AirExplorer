@@ -46,7 +46,7 @@ class AppModule(appModuleHandler.AppModule):
 		try:
 			if obj.name == '' and obj.role == controlTypes.ROLE_DOCUMENT:
 				obj.simplePrevious.doAction()
-				PlaySound("C:/Windows/Media/Speech Disambiguation.wav", SND_FILENAME | SND_ASYNC)
+				PlaySound("C:/Windows/Media/Windows Battery Critical.wav", SND_FILENAME | SND_ASYNC)
 				nextHandler()
 			else:
 				nextHandler()
@@ -117,7 +117,7 @@ class CloudOptions():
 	def initOverlayClass(self):
 		try:
 			if self.name == None and self.role == controlTypes.ROLE_PANE:
-				self.bindGestures({"kb:n":"newFolder", "kb:z":"zipLoad", "kb:v":"changeView", "kb:s":"freeSpace"})
+				self.bindGestures({"kb:n":"newFolder", "kb:z":"zipLoad", "kb:s":"freeSpace"})
 				self.tools = self.parent.next.next
 		except AttributeError:
 			pass
@@ -129,10 +129,6 @@ class CloudOptions():
 	def script_zipLoad(self, gesture):
 		message(self.tools.children[3].children[6].name)
 		self.tools.children[3].children[6].doAction()
-
-	def script_changeView(self, gesture):
-		message(self.tools.children[3].children[-1].name)
-		self.tools.children[3].children[-1].doAction()
 
 	def script_freeSpace(self, gesture):
 		message(self.parent.next.next.next.children[3].children[2].name)
