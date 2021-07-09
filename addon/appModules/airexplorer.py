@@ -20,8 +20,6 @@ addonHandler.initTranslation()
 class AppModule(appModuleHandler.AppModule):
 
 	fg = ""
-	elementObj = ""
-	toolObj = ""
 	category = "AirExplorer"
 	# Translators: Añade el texto herramientas activas al nombre de la nube
 	activeTools = _('Herramientas activas')
@@ -37,9 +35,7 @@ class AppModule(appModuleHandler.AppModule):
 		self.fg = api.getForegroundObject()
 		try:
 			if obj.name == None and obj.role == controlTypes.ROLE_PANE:
-				self.elementObj = obj.parent.next
-				self.toolObj = obj.parent.next.next
-				obj.name = "{}, {}".format(self.elementObj.children[3].children[0].children[5].name, self.activeTools)
+				obj.name = "{}, {}".format(obj.parent.next.children[3].children[0].children[5].name, self.activeTools)
 		except (AttributeError, IndexError):
 			pass
 
