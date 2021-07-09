@@ -11,6 +11,7 @@ from winsound import PlaySound, SND_FILENAME, SND_ASYNC
 from os import path
 from keyboardHandler import KeyboardInputGesture
 from inputCore import manager
+import winUser
 import addonHandler
 
 # Lína de traducción
@@ -72,9 +73,12 @@ class AppModule(appModuleHandler.AppModule):
 		description= _('Activa el panel de cuentas'),
 		gesture="kb:control+shift+c")
 	def script_cuentas(self, gesture):
-		obj = self.fg.children[0].children[3].children[3].children[3].children[0].children[3].children[5]
-		message(obj.name)
-		obj.doAction()
+		try:
+			obj = self.fg.children[0].children[3].children[3].children[3].children[0].children[3].children[5]
+			message(obj.name)
+			obj.doAction()
+		except:
+			pass
 
 	@script(
 		category = category,
@@ -82,9 +86,12 @@ class AppModule(appModuleHandler.AppModule):
 		description= _('Activa el panel de opciones'),
 		gesture="kb:control+shift+o")
 	def script_opciones(self, gesture):
-		obj = self.fg.children[0].children[3].children[3].children[3].children[0].children[3].children[6]
-		message(obj.name)
-		obj.doAction()
+		try:
+			obj = self.fg.children[0].children[3].children[3].children[3].children[0].children[3].children[6]
+			message(obj.name)
+			obj.doAction()
+		except:
+			pass
 
 	@script(
 		category = category,
@@ -112,23 +119,33 @@ class AppModule(appModuleHandler.AppModule):
 
 class CloudOptions():
 
-	tools = ""
+	toolsList = []
+	x = 0
 
 	def initOverlayClass(self):
 		try:
 			if self.name == None and self.role == controlTypes.ROLE_PANE:
-				self.bindGestures({"kb:n":"newFolder", "kb:z":"zipLoad", "kb:s":"freeSpace"})
-				self.tools = self.parent.next.next
+				self.bindGestures({"kb:rightArrow":"next", "kb:leftArrow":"previous", "kb:space":"press"})
+				self.toolsList = [obj for obj in self.parent.next.next.children[3].children if obj.name != ""]
 		except AttributeError:
 			pass
 
-	def script_newFolder(self, gesture):
-		message(self.tools.children[3].children[1].name)
-		self.tools.children[3].children[1].doAction()
+	def script_next(self, gesture):
+		self.x+=1
+		if self.x < (len(self.toolsList) - 1):
+			message(self.toolsList[self.x].name)
+		else:
+			self.x = 0
+			message(self.toolsList[self.x].name)
 
-	def script_zipLoad(self, gesture):
-		message(self.tools.children[3].children[6].name)
-		self.tools.children[3].children[6].doAction()
+	def script_previous(self, gesture):
+		self.x-=1
+		if self.x >= 0:
+			message(self.toolsList[self.x].name)
+		else:
+			self.x = len(self.toolsList) - 2
+			message(self.toolsList[self.x].name)
 
-	def script_freeSpace(self, gesture):
-		message(self.parent.next.next.next.children[3].children[2].name)
+	def script_press(self, gesture):
+		message(self.toolsList[self.x].name)
+		self.toolsList[self.x].doAction()
