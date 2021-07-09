@@ -11,12 +11,12 @@ Si al abrir el programa aparece el cartel air explorer pro lifetime lice, el com
 * Moverse al anterior de los 4 elementos posibles; Avance página
 
 ## Panel de herramientas:
-Al enfocar el elemento situado entre el árbol y la lista de archivos, el complemento renombra el objeto con la nube actual y el texto herramientas activas.
-Cuando este elemento tiene el foco, se activan los siguientes atajos de teclado:  
+Al enfocar el elemento situado entre el árbol y la lista de archivos el complemento etiqueta el objeto con el nombre de la nube actual y el espacio disponible.
+Cuando este elemento tiene el foco se activan los siguientes atajos de teclado:  
 
 * Flecha derecha; verbaliza el nombre de la herramienta siguiente
 * Flecha izquierda; verbaliza el nombre de la herramienta anterior
-* intro, realiza una pulsación en la última herramienta nombrada
+* Barra espaciadora, realiza una pulsación en la última herramienta nombrada
 
 Nota:  
 Algunas de estas opciones solo están disponibles en la versión pro. Si se desactiva la opción mostrar árbol, el mismo desaparece imposibilitando acceder a las herramientas antes nombradas. 
