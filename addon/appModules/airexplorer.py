@@ -120,7 +120,7 @@ class CloudOptions():
 		try:
 			if self.name == None and self.role == controlTypes.ROLE_PANE:
 				self.bindGestures({"kb:rightArrow":"next", "kb:leftArrow":"previous", "kb:space":"press"})
-				self.toolsList = [obj for obj in self.parent.next.next.children[3].children if obj.name != ""]
+				self.toolsList = [obj for obj in self.parent.next.next.children[3].children if obj.name != "" and obj.states != {32, 16777216}]
 		except AttributeError:
 			pass
 
