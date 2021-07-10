@@ -19,7 +19,6 @@ addonHandler.initTranslation()
 
 class AppModule(appModuleHandler.AppModule):
 
-	fg = ""
 	category = "AirExplorer"
 
 	def chooseNVDAObjectOverlayClasses(self, obj, clsList):
@@ -29,19 +28,14 @@ class AppModule(appModuleHandler.AppModule):
 		except:
 			pass
 
-	def event_NVDAObject_init(self, obj):
-		self.fg = api.getForegroundObject()
-		try:
-			if obj.name == None and obj.role == controlTypes.ROLE_PANE:
-				obj.name = "{}, {}".format(obj.parent.next.children[3].children[0].children[5].name, obj.parent.next.next.next.children[3].children[2].name)
-		except (AttributeError, IndexError):
-			pass
-
 	def event_gainFocus(self, obj, nextHandler):
 		try:
 			if obj.name == '' and obj.role == controlTypes.ROLE_DOCUMENT:
 				obj.simplePrevious.doAction()
 				PlaySound("C:/Windows/Media/Windows Battery Critical.wav", SND_FILENAME | SND_ASYNC)
+				nextHandler()
+			elif obj.name == None and obj.role == controlTypes.ROLE_PANE:
+				obj.name = "{}, {}".format(obj.parent.next.children[3].children[0].children[5].name, obj.parent.next.next.next.children[3].children[2].name)
 				nextHandler()
 			else:
 				nextHandler()
@@ -51,10 +45,11 @@ class AppModule(appModuleHandler.AppModule):
 	@script(gestures=[f"kb:control+{i}" for i in range(1, 10)])
 	def script_status(self, gesture):
 		key = -(int(gesture.mainKeyName) + 1)
+		fg = api.getForegroundObject()
 		try:
-			filePath = self.fg.children[0].children[3].children[0].children[3].children[0].children[3].children[0].children[3].children[1].children[3].children[0].children[3].children[0].children[3].children[key].children[1].name
+			filePath = fg.children[0].children[3].children[0].children[3].children[0].children[3].children[0].children[3].children[1].children[3].children[0].children[3].children[0].children[3].children[key].children[1].name
 			elementName = path.basename(filePath)
-			progress = self.fg.children[0].children[3].children[0].children[3].children[0].children[3].children[0].children[3].children[1].children[3].children[0].children[3].children[0].children[3].children[key].children[5].name
+			progress = fg.children[0].children[3].children[0].children[3].children[0].children[3].children[0].children[3].children[1].children[3].children[0].children[3].children[0].children[3].children[key].children[5].name
 			# Translators: Añade la palabra porcentaje al valor
 			message(_('{}; {} porciento'.format(elementName, progress)))
 		except (TypeError, IndexError):
@@ -68,7 +63,7 @@ class AppModule(appModuleHandler.AppModule):
 		gesture="kb:control+shift+c")
 	def script_cuentas(self, gesture):
 		try:
-			obj = self.fg.children[0].children[3].children[3].children[3].children[0].children[3].children[5]
+			obj = api.getForegroundObject().children[0].children[3].children[3].children[3].children[0].children[3].children[5]
 			message(obj.name)
 			obj.doAction()
 		except:
@@ -81,7 +76,7 @@ class AppModule(appModuleHandler.AppModule):
 		gesture="kb:control+shift+o")
 	def script_opciones(self, gesture):
 		try:
-			obj = self.fg.children[0].children[3].children[3].children[3].children[0].children[3].children[6]
+			obj = api.getForegroundObject().children[0].children[3].children[3].children[3].children[0].children[3].children[6]
 			message(obj.name)
 			obj.doAction()
 		except:
@@ -118,10 +113,9 @@ class CloudOptions():
 
 	def initOverlayClass(self):
 		try:
-			if self.name == None and self.role == controlTypes.ROLE_PANE:
 				self.bindGestures({"kb:rightArrow":"next", "kb:leftArrow":"previous", "kb:space":"press"})
 				self.toolsList = [obj for obj in self.parent.next.next.children[3].children if obj.name != "" and obj.states != {32, 16777216}]
-		except AttributeError:
+		except:
 			pass
 
 	def script_next(self, gesture):
