@@ -18,8 +18,7 @@ Cuando este elemento tiene el foco se activan los siguientes atajos de teclado:
 * Flecha izquierda; verbaliza el nombre de la herramienta anterior
 * Barra espaciadora, realiza una pulsación en la última herramienta nombrada
 
-Nota:  
-Algunas de estas opciones solo están disponibles en la versión pro. Si se desactiva la opción mostrar árbol, el mismo desaparece imposibilitando acceder a las herramientas antes nombradas. 
+Nota: Algunas de estas opciones solo están disponibles en la versión pro.
 
 ## Movimiento entre el panel de pestañas y la lista de archivos:
 Con avance y retroceso de página nos desplazaremos entre 4 elementos siempre y cuando estemos en la pestaña con una nube activa.
