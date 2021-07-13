@@ -85,7 +85,7 @@ class AppModule(appModuleHandler.AppModule):
 	@script(
 		category = category,
 		# Translators: Descripción del elemento en el diálogo gestos de entrada
-		description= _('Se mueve al siguiente de los 3 elementos posibles'),
+		description= _('Se mueve al siguiente de los 4 elementos posibles'),
 		gesture="kb:pagedown")
 	def script_nextElement(self, gesture):
 		fc = api.getFocusObject()
@@ -97,7 +97,7 @@ class AppModule(appModuleHandler.AppModule):
 	@script(
 		category = category,
 		# Translators: Descripción del elemento en el diálogo gestos de entrada
-		description= _('Se mueve al anterior de los 3 elementos posibles'),
+		description= _('Se mueve al anterior de los 4 elementos posibles'),
 		gesture="kb:pageup")
 	def script_previousElement(self, gesture):
 		fc = api.getFocusObject()
