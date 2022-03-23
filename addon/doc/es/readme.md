@@ -11,9 +11,9 @@ Si al abrir el programa aparece el cartel air explorer pro lifetime lice, el com
 * Moverse al anterior de los 4 elementos posibles; Avance página
 
 ## Panel de herramientas:
-Al enfocar el elemento situado entre el árbol y la lista de archivos el complemento etiqueta el objeto con el nombre de la nube actual y el espacio disponible.
 Cuando este elemento tiene el foco se activan los siguientes atajos de teclado:  
 
+* s; verbaliza el nombre de la nube actual y su espacio disponible.
 * Flecha derecha; verbaliza el nombre de la herramienta siguiente
 * Flecha izquierda; verbaliza el nombre de la herramienta anterior
 * Barra espaciadora, realiza una pulsación en la última herramienta nombrada
@@ -30,3 +30,4 @@ Con tabulador y shift tabulador nos desplazaremos normalmente entre los elemento
 * Cerrar la pestaña actual; control + w.
 * Moverse a la pestaña siguiente; control + tabulador.
 * Moverse a la pestaña anterior; control + shift + tabulador.
+
